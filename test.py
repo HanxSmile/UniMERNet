@@ -1,7 +1,6 @@
 import argparse
 import time
 from tqdm import tqdm
-import evaluate
 import random
 import re
 import unimernet.tasks as tasks
@@ -16,6 +15,7 @@ from rapidfuzz.distance import Levenshtein
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 from unimernet.common.config import Config
+from unimernet.tasks.bleu import Bleu
 
 # imports modules for registration
 from unimernet.datasets.builders import *
@@ -59,13 +59,13 @@ def load_data(image_path, math_file):
     with open(math_file, 'r') as f:
         # load maths which 
         for i, line in enumerate(f, start=1):
-            image_name = f'{i-1:07d}.png'
+            image_name = f'{i - 1:07d}.png'
             if line.strip() and image_name in image_names:
                 math_gts.append(line.strip())
-    
+
     if len(image_paths) != len(math_gts):
         raise ValueError("The number of images does not match the number of formulas.")
-    
+
     return image_paths, math_gts
 
 
@@ -88,7 +88,7 @@ def normalize_text(text):
 
 
 def score_text(predictions, references):
-    bleu = evaluate.load("bleu", keep_in_memory=True, experiment_id=random.randint(1,1e8))
+    bleu = Bleu(keep_in_memory=True, experiment_id=random.randint(1, 1e8))
     bleu_results = bleu.compute(predictions=predictions, references=references)
 
     lev_dist = []
@@ -125,7 +125,6 @@ def parse_args():
 
 
 def main():
-
     setup_seeds()
     # Load Model and Processor
     start = time.time()
@@ -140,7 +139,7 @@ def main():
     print(f'arch_name:{cfg.config.model.arch}')
     print(f'model_type:{cfg.config.model.model_type}')
     print(f'checkpoint:{cfg.config.model.finetuned}')
-    print(f'='*100)
+    print(f'=' * 100)
 
     end1 = time.time()
 
@@ -168,7 +167,6 @@ def main():
         "./data/UniMER-Test/hwe.txt"
     ]
 
-
     for val_name, image_path, math_file in zip(val_names, image_paths, math_files):
         image_list, math_gts = load_data(image_path, math_file)
 
@@ -178,24 +176,24 @@ def main():
 
         dataset = MathDataset(image_list, transform=transform)
         dataloader = DataLoader(dataset, batch_size=128, num_workers=32)
-        
+
         math_preds = []
         for images in tqdm(dataloader):
             images = images.to(device)
             with torch.no_grad():
                 output = model.generate({"image": images})
             math_preds.extend(output["pred_str"])
-            
+
         # Compute BLEU/METEOR/EditDistance
         norm_gts = [normalize_text(gt) for gt in math_gts]
-        norm_preds = [normalize_text(pred) for pred in math_preds] 
+        norm_preds = [normalize_text(pred) for pred in math_preds]
         print(f'len_gts:{len(norm_gts)}, len_preds={len(norm_preds)}')
         print(f'norm_gts[0]:{norm_gts[0]}')
         print(f'norm_preds[0]:{norm_preds[0]}')
 
         p_scores = score_text(norm_preds, norm_gts)
 
-        write_data= {
+        write_data = {
             "scores": p_scores,
             "text": [{"prediction": p, "reference": r} for p, r in zip(norm_preds, norm_gts)]
         }
@@ -213,7 +211,8 @@ def main():
         print(f'Evaluation Set:{val_name}')
         print(f'Inference Time: {end2 - end1}s')
         print(tabulate(score_table, headers=[*score_headers]))
-        print('='*100)
+        print('=' * 100)
+
 
 if __name__ == "__main__":
     main()

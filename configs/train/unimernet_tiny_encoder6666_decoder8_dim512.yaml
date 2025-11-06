@@ -2,8 +2,10 @@ model:
   arch: unimernet
   model_type: unimernet
   model_config:
-    model_name: ./models/unimernet_tiny
+    model_name: /data/hanxiao36/models/UnimerNet/unimernet_tiny
     max_seq_len: 1536
+  tokenizer_config:
+    path: /data/hanxiao36/models/UnimerNet/unimernet_tiny
 
   load_pretrained: False
   load_finetuned: False
@@ -26,9 +28,9 @@ datasets:
 
     build_info:
       # unimath_train
-      images: ./data/UniMath1M/train/unimath_train
-      annotation: ./data/UniMath1M/train/unimath_train.txt
-      
+      images: /data/hanxiao36/datasets/formula/UniMER-1M/images
+      annotation: /data/hanxiao36/datasets/formula/UniMER-1M/train.txt
+
   formula_rec_eval:
     vis_processor:
       eval:
@@ -42,8 +44,8 @@ datasets:
         max_words: 1536
 
     build_info:
-      images: ./data/UniMER-Test/cpe
-      annotation: ./data/UniMER-Test/cpe.txt
+      images: /data/hanxiao36/datasets/formula/UniMER-Test/cpe
+      annotation: /data/hanxiao36/datasets/formula/UniMER-Test/cpe.txt
 
 run:
   runner: runner_iter

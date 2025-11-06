@@ -2,8 +2,10 @@ model:
   arch: unimernet
   model_type: unimernet
   model_config:
-    model_name: ./models/unimernet_small
+    model_name: /data/hanxiao36/models/UnimerNet/unimernet_small
     max_seq_len: 1536
+  tokenizer_config:
+    path: /data/hanxiao36/models/UnimerNet/unimernet_small
 
 
   load_pretrained: False

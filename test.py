@@ -155,16 +155,16 @@ def main():
         "Handwritten Expression(HWE)"
     ]
     image_paths = [
-        "./data/UniMER-Test/spe",
-        "./data/UniMER-Test/cpe",
-        "./data/UniMER-Test/sce",
-        "./data/UniMER-Test/hwe"
+        "/data/hanxiao36/datasets/formula/UniMER-Test/spe",
+        "/data/hanxiao36/datasets/formula/UniMER-Test/cpe",
+        "/data/hanxiao36/datasets/formula/UniMER-Test/sce",
+        "/data/hanxiao36/datasets/formula/UniMER-Test/hwe"
     ]
     math_files = [
-        "./data/UniMER-Test/spe.txt",
-        "./data/UniMER-Test/cpe.txt",
-        "./data/UniMER-Test/sce.txt",
-        "./data/UniMER-Test/hwe.txt"
+        "/data/hanxiao36/datasets/formula/UniMER-Test/spe.txt",
+        "/data/hanxiao36/datasets/formula/UniMER-Test/cpe.txt",
+        "/data/hanxiao36/datasets/formula/UniMER-Test/sce.txt",
+        "/data/hanxiao36/datasets/formula/UniMER-Test/hwe.txt"
     ]
 
     for val_name, image_path, math_file in zip(val_names, image_paths, math_files):

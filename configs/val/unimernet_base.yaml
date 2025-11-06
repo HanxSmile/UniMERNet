@@ -10,7 +10,7 @@ model:
 
   load_pretrained: False
   load_finetuned: True
-  finetuned: './models/unimernet_base.pth'
+  finetuned: '/data/hanxiao36/models/UnimerNet/unimernet_base/unimernet_base.pth'
 
 datasets:
 
